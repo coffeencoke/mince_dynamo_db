@@ -6,10 +6,10 @@ Gem::Specification.new do |s|
   s.name        = "mince_dynamo_db"
   s.version     = MinceDynamoDb::VERSION
   s.authors     = ["Matt Simpson"]
-  s.email       = ["matt.simpson3@gmail.com"]
+  s.email       = ["matt@railsgrammer.com"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{Lightweight ORM for Amazon's DynamoDB with Ruby Apps}
+  s.description = %q{Lightweight ORM for Amazon's DynamoDB with Ruby Apps}
 
   s.rubyforge_project = "mince_dynamo_db"
 
@@ -18,7 +18,5 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  # specify any dependencies here; for example:
-  # s.add_development_dependency "rspec"
-  # s.add_runtime_dependency "rest-client"
+  s.add_development_dependency "rspec"
 end
