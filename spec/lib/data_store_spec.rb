@@ -1,11 +1,10 @@
-require_relative '../../lib/mince/data_store'
+require_relative '../../lib/mince_dynamo_db/data_store'
 
-describe Mince::DataStore do
+describe MinceDynamoDb::DataStore do
   subject { described_class.instance }
 
-  let(:db) { mock 'mongo database', collection: collection }
-  let(:connection) { mock 'mongo connection', db: db }
-  let(:mongo_data_store_connection) { mock 'mongo_data_store_connection', :db => db}
+  let(:connection) { mock 'dynamo db connection' }
+  let(:mince_dynamo_db_connection) { mock 'mince dynamo db connection', connection: connection }
   let(:collection) { mock 'some collection'}
   let(:collection_name) { 'some_collection_name'}
   let(:primary_key) { mock 'primary key'}
@@ -14,7 +13,7 @@ describe Mince::DataStore do
   let(:return_data) { mock 'return data' }
 
   before do
-    Mince::Connection.stub(:instance => mongo_data_store_connection)
+    MinceDynamoDb::Connection.stub(:instance => mince_dynamo_db_connection)
   end
 
   it 'uses the correct collection' do
@@ -23,15 +22,23 @@ describe Mince::DataStore do
   end
 
   it 'has a primary key identifier' do
-    described_class.primary_key_identifier.should == '_id'
+    described_class.primary_key_identifier.should == 'id'
   end
 
   describe "Generating a primary key" do
-    let(:unique_id) { mock 'id' }
-    it 'should create a reasonably unique id' do
-      BSON::ObjectId.should_receive(:new).and_return(unique_id)
+    let(:unique_id) { '123456789012345' }
+    let(:time) { mock 'time' }
+    let(:salt) { mock 'salt' }
 
-      described_class.generate_unique_id('something').should == unique_id.to_s
+    before do
+      Time.stub_chain('current.utc' => time)
+    end
+
+    it 'should create a reasonably unique id' do
+      Digest::SHA256.should_receive(:hexdigest).with("#{time}#{salt}").and_return(unique_id)
+      shorter_id = unique_id.to_s[0..6]
+
+      described_class.generate_unique_id(seed).should == shorter_id
     end
   end
 
