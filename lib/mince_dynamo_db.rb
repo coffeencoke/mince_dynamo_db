@@ -1,5 +1,2 @@
 require "mince_dynamo_db/version"
-
-module MinceDynamoDb
-  # Your code goes here...
-end
+require 'mince_dynamo_db/data_store'
