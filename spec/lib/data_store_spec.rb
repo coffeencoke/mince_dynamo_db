@@ -49,9 +49,7 @@ describe MinceDynamoDb::DataStore do
   end
 
   it 'can read from the collection' do
-    collection.should_receive(:find).and_return(return_data)
-
-    subject.find_all(collection_name).should == return_data
+    subject.find_all(table_name).should == items
   end
 
   it 'can replace a record' do

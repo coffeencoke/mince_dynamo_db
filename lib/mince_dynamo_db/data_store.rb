@@ -77,6 +77,7 @@ module MinceDynamoDb
     #
     # Gets all fruit records
     def find_all(collection_name)
+      collection(collection_name).items
     end
 
     # Gets a record
