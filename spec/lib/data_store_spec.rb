@@ -5,12 +5,13 @@ describe MinceDynamoDb::DataStore do
 
   let(:db) { mock 'dynamo db connection', tables: { table_name => table } }
   let(:mince_dynamo_db_connection) { mock 'mince dynamo db connection', connection: db }
-  let(:table) { mock 'some collection'}
+  let(:table) { mock 'some collection', items: items}
   let(:table_name) { 'some_collection_name'}
   let(:primary_key) { mock 'primary key'}
   let(:mock_id) { mock 'id' }
   let(:data) { { :_id => mock_id}}
   let(:return_data) { mock 'return data' }
+  let(:items) { mock 'items' }
 
   before do
     MinceDynamoDb::Connection.stub(:instance => mince_dynamo_db_connection)
@@ -42,9 +43,9 @@ describe MinceDynamoDb::DataStore do
   end
 
   it 'can write to the collection' do
-    collection.should_receive(:insert).with(data).and_return(return_data)
+    items.should_receive(:create).with(data).and_return(return_data)
 
-    subject.add(collection_name, data).should == return_data
+    subject.add(table_name, data).should == return_data
   end
 
   it 'can read from the collection' do

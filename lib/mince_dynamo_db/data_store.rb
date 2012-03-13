@@ -29,10 +29,11 @@ module MinceDynamoDb
 
     # Inserts one record into a collection.
     #
-    #   MinceDynamoDb.instance.add 'fruits', id: '1', name: 'Shnawzberry', color: 'redish', quantity: '20'
+    #   MinceDynamoDb::DataStore.instance.add 'fruits', id: '1', name: 'Shnawzberry', color: 'redish', quantity: '20'
     #
     # This will add the hash into the fruits data store collection.
     def add(collection_name, hash)
+      collection(collection_name).items.create(hash)
     end
 
 
@@ -40,7 +41,7 @@ module MinceDynamoDb
     # by the +primary_key_identifier+ method, with a value.  If a record in the data store is found with that key and
     # value, the entire record will be replaced with the given hash.
     #
-    #   MinceDynamoDb.instance.replace 'fruits', id: '1', name: 'Snazzyberry', color: 'redlike', quantity: '23'
+    #   MinceDynamoDb::DataStore.instance.replace 'fruits', id: '1', name: 'Snazzyberry', color: 'redlike', quantity: '23'
     #
     # Replaces the fruit record with a primary key of 1, in the fruits collection, with the new hash.
     def replace(collection_name, hash)
@@ -48,7 +49,7 @@ module MinceDynamoDb
 
     # Gets all records that have the value for a given key.
     #
-    #   MinceDynamoDb.instance.get_all_for_key_with_value 'fruits', :color, 'redish'
+    #   MinceDynamoDb::DataStore.instance.get_all_for_key_with_value 'fruits', :color, 'redish'
     #
     # Gets all fruit records where the color is redish
     def get_all_for_key_with_value(collection_name, key, value)
@@ -56,7 +57,7 @@ module MinceDynamoDb
 
     # Gets the first record that has the value for a given key.
     #
-    #   MinceDynamoDb.instance.get_for_key_with_value 'fruits', :color, 'redish'
+    #   MinceDynamoDb::DataStore.instance.get_for_key_with_value 'fruits', :color, 'redish'
     #
     # Gets the first fruit record where the color is redish
     def get_for_key_with_value(collection_name, key, value)
@@ -64,7 +65,7 @@ module MinceDynamoDb
 
     # Gets all records that have all of the keys and values in the given hash.
     #
-    #   MinceDynamoDb.instance.get_by_params 'fruits', color: 'redish', quantity: 20
+    #   MinceDynamoDb::DataStore.instance.get_by_params 'fruits', color: 'redish', quantity: 20
     #
     # Gets all fruit records that have a quantity of 20 and a redish color.
     def get_by_params(collection_name, hash)
@@ -72,7 +73,7 @@ module MinceDynamoDb
 
     # Gets all records
     #
-    #   MinceDynamoDb.instance.find_all 'fruits'
+    #   MinceDynamoDb::DataStore.instance.find_all 'fruits'
     #
     # Gets all fruit records
     def find_all(collection_name)
@@ -80,7 +81,7 @@ module MinceDynamoDb
 
     # Gets a record
     #
-    #   MinceDynamoDb.instance.find 'fruits', 'id', '1'
+    #   MinceDynamoDb::DataStore.instance.find 'fruits', 'id', '1'
     #
     # Gets the fruit record with an id of 1
     #
@@ -90,7 +91,7 @@ module MinceDynamoDb
 
     # Pushes a value to a record's key that is an array
     #
-    #   MinceDynamoDb.instance.push_to_array 'posts', :id, 1, :comment_ids, 4
+    #   MinceDynamoDb::DataStore.instance.push_to_array 'posts', :id, 1, :comment_ids, 4
     #
     # Adds the comment with an id of 4 to the comments array for the post with an id of 1.
     def push_to_array(collection_name, identifying_key, identifying_value, array_key, value_to_push)
@@ -98,7 +99,7 @@ module MinceDynamoDb
 
     # Removes a value from a record's key that is an array
     #
-    #   MinceDynamoDb.instance.remove_from_array 'posts', :id, 1, :comment_ids, 4
+    #   MinceDynamoDb::DataStore.instance.remove_from_array 'posts', :id, 1, :comment_ids, 4
     #
     # Removes the comment with an id of 4 from the comments array for the post with an id of 1.
     def remove_from_array(collection_name, identifying_key, identifying_value, array_key, value_to_remove)
@@ -106,7 +107,7 @@ module MinceDynamoDb
 
     # Returns all records where the given key contains any of the values provided
     #
-    #   MinceDynamoDb.instance.containing_any 'posts', :tags, ['helpful','new','rails','mince']
+    #   MinceDynamoDb::DataStore.instance.containing_any 'posts', :tags, ['helpful','new','rails','mince']
     #
     # Returns all posts that have a tag helpful, new, rails, or mince.
     def containing_any(collection_name, key, values)
@@ -114,7 +115,7 @@ module MinceDynamoDb
 
     # Returns all records where the given key contains the given value
     #
-    #   MinceDynamoDb.instance.array_contains 'posts', :tags, 'new'
+    #   MinceDynamoDb::DataStore.instance.array_contains 'posts', :tags, 'new'
     #
     # Returns all posts tagged as new.
     #
