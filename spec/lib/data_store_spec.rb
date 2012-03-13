@@ -3,10 +3,10 @@ require_relative '../../lib/mince_dynamo_db/data_store'
 describe MinceDynamoDb::DataStore do
   subject { described_class.instance }
 
-  let(:connection) { mock 'dynamo db connection' }
-  let(:mince_dynamo_db_connection) { mock 'mince dynamo db connection', connection: connection }
-  let(:collection) { mock 'some collection'}
-  let(:collection_name) { 'some_collection_name'}
+  let(:db) { mock 'dynamo db connection', tables: { table_name => table } }
+  let(:mince_dynamo_db_connection) { mock 'mince dynamo db connection', connection: db }
+  let(:table) { mock 'some collection'}
+  let(:table_name) { 'some_collection_name'}
   let(:primary_key) { mock 'primary key'}
   let(:mock_id) { mock 'id' }
   let(:data) { { :_id => mock_id}}
@@ -17,8 +17,7 @@ describe MinceDynamoDb::DataStore do
   end
 
   it 'uses the correct collection' do
-    db.stub(collection: collection)
-    subject.collection('collection name').should == collection
+    subject.collection(table_name).should == table
   end
 
   it 'has a primary key identifier' do
@@ -38,7 +37,7 @@ describe MinceDynamoDb::DataStore do
       Digest::SHA256.should_receive(:hexdigest).with("#{time}#{salt}").and_return(unique_id)
       shorter_id = unique_id.to_s[0..6]
 
-      described_class.generate_unique_id(seed).should == shorter_id
+      described_class.generate_unique_id(salt).should == shorter_id
     end
   end
 

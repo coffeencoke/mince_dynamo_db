@@ -129,10 +129,12 @@ module MinceDynamoDb
 
     # Returns the collection
     def collection(collection_name)
+      db.tables[collection_name]
     end
 
     # Returns the database object
     def db
+      MinceDynamoDb::Connection.instance.connection
     end
   end
 end
