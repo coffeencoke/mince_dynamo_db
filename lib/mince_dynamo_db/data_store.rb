@@ -33,6 +33,7 @@ module MinceDynamoDb
     #
     # This will add the hash into the fruits data store collection.
     def add(collection_name, hash)
+      hash.delete_if{|k,v| v.nil? }
       collection(collection_name).items.create(hash)
     end
 
@@ -54,7 +55,7 @@ module MinceDynamoDb
     #
     # Gets all fruit records where the color is redish
     def get_all_for_key_with_value(collection_name, key, value)
-      collection(collection_name).items.where(key => value)
+      array_to_hash(get_by_params(key => value))
     end
 
     # Gets the first record that has the value for a given key.
@@ -63,7 +64,7 @@ module MinceDynamoDb
     #
     # Gets the first fruit record where the color is redish
     def get_for_key_with_value(collection_name, key, value)
-      get_all_for_key_with_value(collection_name, key, value).first
+      to_hash(get_all_for_key_with_value(collection_name, key, value).first)
     end
 
     # Gets all records that have all of the keys and values in the given hash.
@@ -72,6 +73,8 @@ module MinceDynamoDb
     #
     # Gets all fruit records that have a quantity of 20 and a redish color.
     def get_by_params(collection_name, hash)
+      puts hash.inspect
+      array_to_hash(collection(collection_name).items.where(hash))
     end
 
     # Gets all records
@@ -80,7 +83,7 @@ module MinceDynamoDb
     #
     # Gets all fruit records
     def find_all(collection_name)
-      collection(collection_name).items
+      array_to_hash(collection(collection_name).items)
     end
 
     # Gets a record
@@ -91,7 +94,7 @@ module MinceDynamoDb
     #
     # Todo: make this only receive 2 arguments: collection name and value, use the +primary_key_identifier+
     def find(collection_name, key, value)
-      collection(collection_name).items.at(value)
+      to_hash collection(collection_name).items.at(value)
     end
 
     # Pushes a value to a record's key that is an array
@@ -120,7 +123,7 @@ module MinceDynamoDb
     #
     # Returns all posts that have a tag helpful, new, rails, or mince.
     def containing_any(collection_name, key, values)
-      collection(collection_name).items.where(key.to_sym).in(values)
+      array_to_hash collection(collection_name).items.where(key.to_sym).in(values)
     end
 
     # Returns all records where the given key contains the given value
@@ -131,26 +134,51 @@ module MinceDynamoDb
     #
     # todo: why use key.to_s here?
     def array_contains(collection_name, key, value)
-      collection(collection_name).items.where(key.to_sym).contains(value)
+      array_to_hash collection(collection_name).items.where(key.to_sym).contains(value)
     end
 
     # Clears the data store.
     # Mainly used for rolling back the data store in tests.
+    # TODO: Create the table using the deleted table's properties (read capacity, write capacity, hash key, range key, etc.)
+    # TODO: Make this faster, right now it is TERRIBLY slow because DynamoDB takes forever to delete and create a collection
     def clear
+      table_names = db.tables.map(&:name)
       db.tables.each do |t|
         t.delete
-        db.tables.create(t.name, 10, 5, hash_key: { id: :string })
       end
+
+      table_names.each do |name|
+        create_collection(name)
+      end
+
+      sleep 1 until db.tables.all?{|a| a.status == :active }
     end
 
     # Returns the collection
     def collection(collection_name)
-      db.tables[collection_name]
+      db.tables[collection_name.to_s].tap do |c|
+        c.hash_key unless c.schema_loaded? # to load the schema
+      end
     end
 
     # Returns the database object
     def db
       MinceDynamoDb::Connection.instance.connection
+    end
+
+    def to_hash(item)
+      item.attributes.to_h if iteme      
+    end
+
+    def array_to_hash(array)
+      array.map{|a| to_hash(a) }
+    end
+
+    def create_collection(collection_name)
+      db.tables.create(collection_name, 10, 5, hash_key: { id: :string })
+    rescue AWS::DynamoDB::Errors::ResourceNotFoundException, AWS::DynamoDB::Errors::ResourceInUseException
+      sleep 1
+      create_collection collection_name
     end
   end
 end
