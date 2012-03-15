@@ -45,6 +45,7 @@ module MinceDynamoDb
     #
     # Replaces the fruit record with a primary key of 1, in the fruits collection, with the new hash.
     def replace(collection_name, hash)
+      collection(collection_name).items.put(hash)
     end
 
     # Gets all records that have the value for a given key.
@@ -53,6 +54,7 @@ module MinceDynamoDb
     #
     # Gets all fruit records where the color is redish
     def get_all_for_key_with_value(collection_name, key, value)
+      collection(collection_name).items.where(key => value)
     end
 
     # Gets the first record that has the value for a given key.
@@ -61,6 +63,7 @@ module MinceDynamoDb
     #
     # Gets the first fruit record where the color is redish
     def get_for_key_with_value(collection_name, key, value)
+      get_all_for_key_with_value(collection_name, key, value).first
     end
 
     # Gets all records that have all of the keys and values in the given hash.
@@ -88,6 +91,7 @@ module MinceDynamoDb
     #
     # Todo: make this only receive 2 arguments: collection name and value, use the +primary_key_identifier+
     def find(collection_name, key, value)
+      collection(collection_name).items.at(value)
     end
 
     # Pushes a value to a record's key that is an array
@@ -96,6 +100,8 @@ module MinceDynamoDb
     #
     # Adds the comment with an id of 4 to the comments array for the post with an id of 1.
     def push_to_array(collection_name, identifying_key, identifying_value, array_key, value_to_push)
+      item = get_for_key_with_value(collection_name, identifying_key, identifying_value)
+      item.attributes.add(array_key => [value_to_push])
     end
 
     # Removes a value from a record's key that is an array
@@ -104,6 +110,8 @@ module MinceDynamoDb
     #
     # Removes the comment with an id of 4 from the comments array for the post with an id of 1.
     def remove_from_array(collection_name, identifying_key, identifying_value, array_key, value_to_remove)
+      item = get_for_key_with_value(collection_name, identifying_key, identifying_value)
+      item.attributes.delete(array_key => [value_to_remove])
     end
 
     # Returns all records where the given key contains any of the values provided
@@ -112,6 +120,7 @@ module MinceDynamoDb
     #
     # Returns all posts that have a tag helpful, new, rails, or mince.
     def containing_any(collection_name, key, values)
+      collection(collection_name).items.where(key.to_sym).in(values)
     end
 
     # Returns all records where the given key contains the given value
@@ -122,11 +131,16 @@ module MinceDynamoDb
     #
     # todo: why use key.to_s here?
     def array_contains(collection_name, key, value)
+      collection(collection_name).items.where(key.to_sym).contains(value)
     end
 
     # Clears the data store.
     # Mainly used for rolling back the data store in tests.
     def clear
+      db.tables.each do |t|
+        t.delete
+        db.tables.create(t.name, 10, 5, hash_key: { id: :string })
+      end
     end
 
     # Returns the collection
