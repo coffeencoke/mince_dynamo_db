@@ -52,8 +52,6 @@ Matt Simpson - [@railsgrammer](https://twitter.com/railsgrammer)
 
 # Contributors
 
-Amos King - [@adkron](https://twitter.com/adkron)
-
 - Your name here!
 
 ![Mince Some App](https://github.com/coffeencoke/gist-files/raw/master/images/mince%20garlic.png)
