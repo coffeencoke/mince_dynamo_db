@@ -20,5 +20,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'aws-sdk', "~> 1.3.7"
 
-  s.add_development_dependency "rspec"
+  s.add_development_dependency "rspec", "~> 2.8.0"
+  s.add_development_dependency "guard-rspec", "~> 0.6.0"
 end
