@@ -55,7 +55,7 @@ module MinceDynamoDb
     #
     # Gets all fruit records where the color is redish
     def get_all_for_key_with_value(collection_name, key, value)
-      array_to_hash(get_by_params(key => value))
+      array_to_hash(get_by_params(key.to_s => value))
     end
 
     # Gets the first record that has the value for a given key.
@@ -64,7 +64,7 @@ module MinceDynamoDb
     #
     # Gets the first fruit record where the color is redish
     def get_for_key_with_value(collection_name, key, value)
-      to_hash(get_all_for_key_with_value(collection_name, key, value).first)
+      to_hash(get_all_for_key_with_value(collection_name, key.to_s, value).first)
     end
 
     # Gets all records that have all of the keys and values in the given hash.
@@ -73,7 +73,7 @@ module MinceDynamoDb
     #
     # Gets all fruit records that have a quantity of 20 and a redish color.
     def get_by_params(collection_name, hash)
-      puts hash.inspect
+      hash = HashWithIndifferentAccess.new(hash)
       array_to_hash(collection(collection_name).items.where(hash))
     end
 
@@ -167,7 +167,7 @@ module MinceDynamoDb
     end
 
     def to_hash(item)
-      item.attributes.to_h if iteme      
+      item.attributes.to_h if item      
     end
 
     def array_to_hash(array)
