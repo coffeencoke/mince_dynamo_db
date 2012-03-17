@@ -55,7 +55,7 @@ module MinceDynamoDb
     #
     # Gets all fruit records where the color is redish
     def get_all_for_key_with_value(collection_name, key, value)
-      array_to_hash(get_by_params(key.to_s => value))
+      get_by_params(collection_name, key => value)
     end
 
     # Gets the first record that has the value for a given key.
@@ -64,7 +64,7 @@ module MinceDynamoDb
     #
     # Gets the first fruit record where the color is redish
     def get_for_key_with_value(collection_name, key, value)
-      to_hash(get_all_for_key_with_value(collection_name, key.to_s, value).first)
+      get_all_for_key_with_value(collection_name, key.to_s, value).first
     end
 
     # Gets all records that have all of the keys and values in the given hash.
@@ -94,7 +94,7 @@ module MinceDynamoDb
     #
     # Todo: make this only receive 2 arguments: collection name and value, use the +primary_key_identifier+
     def find(collection_name, key, value)
-      to_hash collection(collection_name).items.at(value)
+      get_for_key_with_value(collection_name, key, value)
     end
 
     # Pushes a value to a record's key that is an array
@@ -139,19 +139,13 @@ module MinceDynamoDb
 
     # Clears the data store.
     # Mainly used for rolling back the data store in tests.
-    # TODO: Create the table using the deleted table's properties (read capacity, write capacity, hash key, range key, etc.)
-    # TODO: Make this faster, right now it is TERRIBLY slow because DynamoDB takes forever to delete and create a collection
     def clear
-      table_names = db.tables.map(&:name)
       db.tables.each do |t|
-        t.delete
+        t.hash_key unless t.schema_loaded? # to load the schema
+        t.items.each do |i|
+          i.delete
+        end
       end
-
-      table_names.each do |name|
-        create_collection(name)
-      end
-
-      sleep 1 until db.tables.all?{|a| a.status == :active }
     end
 
     # Returns the collection
@@ -167,18 +161,11 @@ module MinceDynamoDb
     end
 
     def to_hash(item)
-      item.attributes.to_h if item      
+      item.attributes.to_h if item
     end
 
     def array_to_hash(array)
       array.map{|a| to_hash(a) }
-    end
-
-    def create_collection(collection_name)
-      db.tables.create(collection_name, 10, 5, hash_key: { id: :string })
-    rescue AWS::DynamoDB::Errors::ResourceNotFoundException, AWS::DynamoDB::Errors::ResourceInUseException
-      sleep 1
-      create_collection collection_name
     end
   end
 end
