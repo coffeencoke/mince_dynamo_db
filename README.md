@@ -42,6 +42,7 @@ If you are able to switch between Hashy Db and Mince Dynamo Db, your application
 - Write integration specs
 - Do not use singleton for data store
 - Refactor data store
+- Remove dependency on Active Support
 
 # Contribute
 
