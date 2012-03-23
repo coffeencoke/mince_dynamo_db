@@ -24,7 +24,7 @@ MinceDynamoDb::DataStore.find_all 'books'
 MinceDynamoDb::DataStore.replace 'books', id: 1, title: 'A World In Photographs', publisher: 'National Geographic'
 </pre>
 
-View the [data_store.rb](https://github.com/coffeencoke/mince_dynamo_db/blob/master/lib/mince_dynamo_db/data_store.rb) file for all methods available.
+View the docs for MinceDynamoDb::DataStore for all methods available.
 
 Use with [mince data model](https://github.com/asynchrony/mince_data_model) to make it easy to change from one data storage to another, like [Hashy Db](https://github.com/asynchrony/hashy_db), a Hash data persistence implementation, or [Mince](https://github.com/asynchrony/mince), a MongoDB implementation.
 
@@ -39,8 +39,9 @@ If you are able to switch between Hashy Db and Mince Dynamo Db, your application
 
 # Todo
 
-- Load configuration from a yaml file
-- Add rdoc comments
+- Write specs for data store
+- Do not use singleton for data store
+- Refactor data store
 
 # Contribute
 

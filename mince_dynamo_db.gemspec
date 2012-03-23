@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = MinceDynamoDb::VERSION
   s.authors     = ["Matt Simpson"]
   s.email       = ["matt@railsgrammer.com"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/coffeencoke/mince_dynamo_db"
   s.summary     = %q{Lightweight ORM for Amazon's DynamoDB with Ruby Apps}
   s.description = %q{Lightweight ORM for Amazon's DynamoDB with Ruby Apps}
 
@@ -22,4 +22,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "rspec", "~> 2.8.0"
   s.add_development_dependency "guard-rspec", "~> 0.6.0"
+  s.add_development_dependency "yard", "~> 0.7.5"
+  s.add_development_dependency "redcarpet", "~> 2.1.1"
 end
