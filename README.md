@@ -39,7 +39,7 @@ If you are able to switch between Hashy Db and Mince Dynamo Db, your application
 
 # Todo
 
-- Write specs for data store
+- Write integration specs
 - Do not use singleton for data store
 - Refactor data store
 

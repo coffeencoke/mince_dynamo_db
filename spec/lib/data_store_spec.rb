@@ -5,12 +5,14 @@ describe MinceDynamoDb::DataStore do
 
   let(:db) { mock 'dynamo db connection', tables: { collection_name => collection } }
   let(:mince_dynamo_db_connection) { mock 'mince dynamo db connection', connection: db }
-  let(:collection) { mock 'some collection', items: items}
+  let(:collection) { mock 'some collection', items: items, schema_loaded?: true }
   let(:collection_name) { 'some_collection_name'}
   let(:primary_key) { mock 'primary key'}
   let(:mock_id) { mock 'id' }
   let(:data) { { :_id => mock_id}}
-  let(:return_data) { mock 'return data' }
+  let(:return_data) { mock 'return data', attributes: attributes }
+  let(:attributes) { mock 'attributes', to_h: hash }
+  let(:hash) { mock 'hash' }
   let(:items) { mock 'items' }
 
   before do
@@ -49,7 +51,12 @@ describe MinceDynamoDb::DataStore do
   end
 
   it 'can read from the collection' do
-    subject.find_all(collection_name).should == items
+    item_hash = mock 'hash of attributes for an item'
+    item_attributes = mock 'attributes for an item', to_h: item_hash
+    item = mock 'item', attributes: item_attributes
+    collection.stub(items: [item])
+
+    subject.find_all(collection_name).should == [item_hash]
   end
 
   it 'can replace a record' do
@@ -62,71 +69,65 @@ describe MinceDynamoDb::DataStore do
     field = "stuff"
     value = "more stuff"
 
-    items.should_receive(:at).with(value).and_return(return_data)
+    items.should_receive(:where).with(field => value).and_return([return_data])
     
-    subject.find(collection_name, field, value).should == return_data
+    subject.find(collection_name, field, value).should == hash
   end
 
   it 'can clear the data store' do
-    collection_1 = mock 'collection 1', name: 'collection 1'
-    collection_2 = mock 'collection 2', name: 'collection 2'
+    item = mock 'item', delete: nil
+    item2 = mock 'item 2', delete: nil
+    collection_1 = mock 'collection 1', name: 'collection 1', schema_loaded?: true, items: [item]
+    collection_2 = mock 'collection 2', name: 'collection 2', schema_loaded?: true, items: [item2]
     collections = [collection_1, collection_2]
 
     db.stub(:tables => collections)
 
-    collections.each do |t|
-      t.should_receive(:delete)
-      db.tables.should_receive(:create).with(t.name, 10, 5, hash_key: { id: :string })
-    end
+    item.should_receive(:delete)
+    item2.should_receive(:delete)
     
     subject.clear
   end
 
   it 'can get all records of a specific key value' do
-    items.should_receive(:where).with("key" => "value").and_return(return_data)
+    items.should_receive(:where).with("key" => "value").and_return([return_data])
 
-    subject.get_all_for_key_with_value(collection_name, "key", "value").should == return_data
+    subject.get_all_for_key_with_value(collection_name, "key", "value").should == [hash]
   end
 
   it 'can get a record of a specific key value' do
     items.should_receive(:where).with({"key" => "value"}).and_return([return_data])
 
-    subject.get_for_key_with_value(collection_name, "key", "value").should == return_data
+    subject.get_for_key_with_value(collection_name, "key", "value").should == hash
   end
 
   it 'can get all records where a value includes any of a set of values' do
     filter = mock 'filter', in: return_data
     items.should_receive(:where).with(:key1).and_return(filter)
-    filter.should_receive(:in).with([1,2,4]).and_return(return_data)
+    filter.should_receive(:in).with([1,2,4]).and_return([return_data])
 
-    subject.containing_any(collection_name, "key1", [1,2,4]).should == return_data
+    subject.containing_any(collection_name, "key1", [1,2,4]).should == [hash]
   end
 
   it 'can get all records where the array includes a value' do
-    filter = mock 'filter', containse: return_data
+    filter = mock 'filter', contains: return_data
     items.should_receive(:where).with(:key).and_return(filter)
-    filter.should_receive(:contains).with('value').and_return(return_data)
+    filter.should_receive(:contains).with('value').and_return([return_data])
 
-    subject.array_contains(collection_name, "key", "value").should == return_data
+    subject.array_contains(collection_name, "key", "value").should == [hash]
   end
 
   it 'can push a value to an array for a specific record' do
-    attributes = mock 'attributes'
-    item = mock 'item', attributes: attributes
+    items.should_receive(:where).with("key" => "value").and_return([return_data])
+    attributes.should_receive(:add).with(:array_key => ["value_to_push"])
 
-    items.should_receive(:where).with(:key => "value").and_return([item])
-    attributes.should_receive(:add).with(:array_key => ["value_to_push"]).and_return(return_data)
-
-    subject.push_to_array(collection_name, :key, "value", :array_key, "value_to_push").should == return_data
+    subject.push_to_array(collection_name, :key, "value", :array_key, "value_to_push")
   end
 
   it 'can remove a value from an array for a specific record' do
-    attributes = mock 'attributes'
-    item = mock 'item', attributes: attributes
+    items.should_receive(:where).with("key" => "value").and_return([return_data])
+    attributes.should_receive(:delete).with(:array_key => ["value_to_remove"])
 
-    items.should_receive(:where).with(:key => "value").and_return([item])
-    attributes.should_receive(:delete).with(:array_key => ["value_to_remove"]).and_return(return_data)
-
-    subject.remove_from_array(collection_name, :key, "value", :array_key, "value_to_remove").should == return_data
+    subject.remove_from_array(collection_name, :key, "value", :array_key, "value_to_remove")
   end
 end

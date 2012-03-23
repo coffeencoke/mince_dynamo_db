@@ -1,5 +1,6 @@
 require 'singleton'
 require 'digest'
+require 'active_support/hash_with_indifferent_access'
 
 require_relative 'connection'
 
@@ -72,7 +73,7 @@ module MinceDynamoDb # :nodoc:
     # @param [Hash] hash a hash of data to be added to the collection
     def add(collection_name, hash)
       hash.delete_if{|k,v| v.nil? }
-      collection(collection_name).items.create(hash)
+      items(collection_name).create(hash)
     end
 
     # Replaces a record in the collection based on the primary key's value.  The hash must contain a key, defined
@@ -82,7 +83,7 @@ module MinceDynamoDb # :nodoc:
     # @param [String] collection_name the name of the collection
     # @param [Hash] hash a hash to replace the record in the collection with
     def replace(collection_name, hash)
-      collection(collection_name).items.put(hash)
+      items(collection_name).put(hash)
     end
 
     # Gets all records that have the value for a given key.
@@ -112,7 +113,7 @@ module MinceDynamoDb # :nodoc:
     # @return [Array] an array of all records matching the given hash for the collection
     def get_by_params(collection_name, hash)
       hash = HashWithIndifferentAccess.new(hash)
-      array_to_hash(collection(collection_name).items.where(hash))
+      array_to_hash(items(collection_name).where(hash))
     end
 
     # Gets all records for a collection
@@ -120,7 +121,7 @@ module MinceDynamoDb # :nodoc:
     # @param [String] collection_name the name of the collection
     # @return [Array] all records for the given collection name
     def find_all(collection_name)
-      array_to_hash(collection(collection_name).items)
+      array_to_hash(items(collection_name))
     end
 
     # Gets a record matching a key and value
@@ -141,7 +142,7 @@ module MinceDynamoDb # :nodoc:
     # @param [String] array_key the field to push an array to
     # @param [*] value_to_push the value to push to the array
     def push_to_array(collection_name, identifying_key, identifying_value, array_key, value_to_push)
-      item = get_for_key_with_value(collection_name, identifying_key, identifying_value)
+      item = items(collection_name).where(identifying_key.to_s => identifying_value).first
       item.attributes.add(array_key => [value_to_push])
     end
 
@@ -153,7 +154,7 @@ module MinceDynamoDb # :nodoc:
     # @param [String] array_key the field to push an array from
     # @param [*] value_to_remove the value to remove from the array
     def remove_from_array(collection_name, identifying_key, identifying_value, array_key, value_to_remove)
-      item = get_for_key_with_value(collection_name, identifying_key, identifying_value)
+      item = items(collection_name).where(identifying_key.to_s => identifying_value).first      
       item.attributes.delete(array_key => [value_to_remove])
     end
 
