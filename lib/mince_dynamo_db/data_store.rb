@@ -86,6 +86,11 @@ module MinceDynamoDb # :nodoc:
       items(collection_name).put(hash)
     end
 
+    # Not yet implemented
+    def update_field_with_value(*args)
+      raise %(The method `MinceDynamoDb::DataStore.singleton.update_field_with_value` is not implemented, you should implement it for us!)
+    end
+
     # Gets all records that have the value for a given key.
     #
     # @param [String] collection_name the name of the collection
