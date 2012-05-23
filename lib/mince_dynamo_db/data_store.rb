@@ -48,6 +48,23 @@ module MinceDynamoDb # :nodoc:
   class DataStore
     include Singleton
 
+
+
+    # Not yet implemented
+    def update_field_with_value(*args)
+      raise %(The method `MinceDynamoDb::DataStore.singleton.update_field_with_value` is not implemented, you should implement it for us!)
+    end
+
+    def delete_field(collection_name, field)
+      raise %(The method `MinceDynamoDb::DataStore.singleton.delete_field` is not implemented, you should implement it for us!)
+    end
+
+    def delete_by_params(collection_name, params)
+      raise %(The method `MinceDynamoDb::DataStore.singleton.delete_by_params` is not implemented, you should implement it for us!)
+    end
+
+
+
     # Returns the primary key identifier for records.  This is necessary because not all databases use the same
     # primary key.
     #
@@ -84,11 +101,6 @@ module MinceDynamoDb # :nodoc:
     # @param [Hash] hash a hash to replace the record in the collection with
     def replace(collection_name, hash)
       items(collection_name).put(hash)
-    end
-
-    # Not yet implemented
-    def update_field_with_value(*args)
-      raise %(The method `MinceDynamoDb::DataStore.singleton.update_field_with_value` is not implemented, you should implement it for us!)
     end
 
     # Gets all records that have the value for a given key.
