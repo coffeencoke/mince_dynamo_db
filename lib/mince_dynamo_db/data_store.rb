@@ -63,6 +63,10 @@ module MinceDynamoDb # :nodoc:
       raise %(The method `MinceDynamoDb::DataStore.singleton.delete_by_params` is not implemented, you should implement it for us!)
     end
 
+    def delete_collection(collection_name)
+      raise %(The method `MinceDynamoDb::DataStore.singleton.delete_collection` is not implemented, you should implement it for us!)
+    end
+
 
 
     # Returns the primary key identifier for records.  This is necessary because not all databases use the same
