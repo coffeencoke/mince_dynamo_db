@@ -78,6 +78,14 @@ describe MinceDynamoDb::DataStore do
     subject.find(collection_name, field, value).should == hash
   end
 
+  it 'can delete a record that matches a criteria' do
+    params = mock 'params'
+    items.should_receive(:where).with(params).and_return([return_data])
+    return_data.should_receive(:delete)
+    
+    subject.delete_by_params(collection_name, params)
+  end
+
   it 'can clear the data store' do
     item = mock 'item', delete: nil
     item2 = mock 'item 2', delete: nil

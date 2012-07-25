@@ -60,10 +60,6 @@ module MinceDynamoDb # :nodoc:
       raise %(The method `MinceDynamoDb::DataStore.singleton.delete_field` is not implemented, you should implement it for us!)
     end
 
-    def delete_by_params(collection_name, params)
-      raise %(The method `MinceDynamoDb::DataStore.singleton.delete_by_params` is not implemented, you should implement it for us!)
-    end
-
     def delete_collection(collection_name)
       raise %(The method `MinceDynamoDb::DataStore.singleton.delete_collection` is not implemented, you should implement it for us!)
     end
@@ -198,6 +194,12 @@ module MinceDynamoDb # :nodoc:
     # @return [Array] all records where the key contains the given value
     def array_contains(collection_name, key, value)
       array_to_hash items(collection_name).where(key.to_sym).contains(value)
+    end
+
+    # Deletes a record that matches the given criteria from the data store.
+    def delete_by_params(collection_name, params)
+      item = items(collection_name).where(params).first
+      item.delete
     end
 
     # Clears the data store.
