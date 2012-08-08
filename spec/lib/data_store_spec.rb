@@ -9,13 +9,17 @@ describe MinceDynamoDb::DataStore do
   let(:collection_name) { 'some_collection_name'}
   let(:primary_key) { mock 'primary key'}
   let(:mock_id) { mock 'id' }
-  let(:data) { { :_id => mock_id}}
+  let(:data) { { :_id => mock_id, time_field: mock('time field')}}
+  let(:sanitized_data) { mock 'sanitized data' }
+  let(:sanitized_time) { mock 'sanitized time' }
+  let(:sanitized_id) { mock 'sanitized id' }
   let(:return_data) { mock 'return data', attributes: attributes }
   let(:attributes) { mock 'attributes', to_h: hash }
   let(:hash) { mock 'hash' }
   let(:items) { mock 'items' }
 
   before do
+    MinceDynamoDb::DataSanitizer.stub(:prepare_hash_for_storage).with(data).and_return(sanitized_data)
     MinceDynamoDb::Connection.stub(:instance => mince_dynamo_db_connection)
   end
 
@@ -45,7 +49,7 @@ describe MinceDynamoDb::DataStore do
   end
 
   it 'can write to the collection' do
-    items.should_receive(:create).with(data).and_return(return_data)
+    items.should_receive(:create).with(sanitized_data).and_return(return_data)
 
     subject.add(collection_name, data).should == return_data
   end
@@ -60,7 +64,7 @@ describe MinceDynamoDb::DataStore do
   end
 
   it 'can replace a record' do
-    items.should_receive(:put).with(data)
+    items.should_receive(:put).with(sanitized_data)
 
     subject.replace(collection_name, data)
   end
@@ -72,6 +76,14 @@ describe MinceDynamoDb::DataStore do
     items.should_receive(:where).with(field => value).and_return([return_data])
     
     subject.find(collection_name, field, value).should == hash
+  end
+
+  it 'can delete a record that matches a criteria' do
+    params = mock 'params'
+    items.should_receive(:where).with(params).and_return([return_data])
+    return_data.should_receive(:delete)
+    
+    subject.delete_by_params(collection_name, params)
   end
 
   it 'can clear the data store' do
@@ -118,10 +130,13 @@ describe MinceDynamoDb::DataStore do
   end
 
   it 'can push a value to an array for a specific record' do
+    value_to_push = mock 'value to push to the record'
+    sanitized_value_to_push = mock 'sanitized value to push to the record'
+    MinceDynamoDb::DataSanitizer.stub(:prepare_field_for_storage).with(value_to_push).and_return(sanitized_value_to_push)
     items.should_receive(:where).with("key" => "value").and_return([return_data])
-    attributes.should_receive(:add).with(:array_key => ["value_to_push"])
+    attributes.should_receive(:add).with(:array_key => [sanitized_value_to_push])
 
-    subject.push_to_array(collection_name, :key, "value", :array_key, "value_to_push")
+    subject.push_to_array(collection_name, :key, "value", :array_key, value_to_push)
   end
 
   it 'can remove a value from an array for a specific record' do

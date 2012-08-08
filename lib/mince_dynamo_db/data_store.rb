@@ -3,6 +3,7 @@ require 'digest'
 require 'active_support/hash_with_indifferent_access'
 
 require_relative 'connection'
+require_relative 'data_sanitizer'
 
 module MinceDynamoDb # :nodoc:
   # = Mince DynamoDb Data Store
@@ -59,10 +60,6 @@ module MinceDynamoDb # :nodoc:
       raise %(The method `MinceDynamoDb::DataStore.singleton.delete_field` is not implemented, you should implement it for us!)
     end
 
-    def delete_by_params(collection_name, params)
-      raise %(The method `MinceDynamoDb::DataStore.singleton.delete_by_params` is not implemented, you should implement it for us!)
-    end
-
     def delete_collection(collection_name)
       raise %(The method `MinceDynamoDb::DataStore.singleton.delete_collection` is not implemented, you should implement it for us!)
     end
@@ -98,7 +95,7 @@ module MinceDynamoDb # :nodoc:
     # @param [Hash] hash a hash of data to be added to the collection
     def add(collection_name, hash)
       hash.delete_if{|k,v| v.nil? }
-      items(collection_name).create(hash)
+      items(collection_name).create(sanitized_hash(hash))
     end
 
     # Replaces a record in the collection based on the primary key's value.  The hash must contain a key, defined
@@ -108,7 +105,7 @@ module MinceDynamoDb # :nodoc:
     # @param [String] collection_name the name of the collection
     # @param [Hash] hash a hash to replace the record in the collection with
     def replace(collection_name, hash)
-      items(collection_name).put(hash)
+      items(collection_name).put(sanitized_hash(hash))
     end
 
     # Gets all records that have the value for a given key.
@@ -168,7 +165,7 @@ module MinceDynamoDb # :nodoc:
     # @param [*] value_to_push the value to push to the array
     def push_to_array(collection_name, identifying_key, identifying_value, array_key, value_to_push)
       item = items(collection_name).where(identifying_key.to_s => identifying_value).first
-      item.attributes.add(array_key => [value_to_push])
+      item.attributes.add(array_key => [sanitized_field(value_to_push)])
     end
 
     # Removes a value from a record's key that is an array
@@ -203,6 +200,12 @@ module MinceDynamoDb # :nodoc:
       array_to_hash items(collection_name).where(key.to_sym).contains(value)
     end
 
+    # Deletes a record that matches the given criteria from the data store.
+    def delete_by_params(collection_name, params)
+      item = items(collection_name).where(params).first
+      item.delete
+    end
+
     # Clears the data store.
     # Mainly used for rolling back the data store in tests.
     def clear
@@ -230,6 +233,14 @@ module MinceDynamoDb # :nodoc:
     end
 
     private
+
+    def sanitized_field(field)
+      DataSanitizer.prepare_field_for_storage(field)
+    end
+
+    def sanitized_hash(hash)
+      DataSanitizer.prepare_hash_for_storage(hash)
+    end
 
     # Takes a DynamoDB item and returns the attributes of that item as a hash
     def to_hash(item)
