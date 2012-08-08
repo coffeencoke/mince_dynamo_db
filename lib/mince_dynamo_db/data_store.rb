@@ -67,6 +67,10 @@ module MinceDynamoDb # :nodoc:
       raise %(The method `MinceDynamoDb::DataStore.singleton.delete_collection` is not implemented, you should implement it for us!)
     end
 
+    def increment_field_by_amount(collection_name, id, field_name, amount)
+      raise %(The method `MinceDynamoDb::DataStore.singleton.increment_field_by_amount` is not implemented, you should implement it for us!)
+    end
+
 
 
     # Returns the primary key identifier for records.  This is necessary because not all databases use the same
