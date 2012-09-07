@@ -135,7 +135,7 @@ module MinceDynamoDb # :nodoc:
     # @return [Array] an array of all records matching the given hash for the collection
     def get_by_params(collection_name, hash)
       hash = HashWithIndifferentAccess.new(hash)
-      array_to_hash(items(collection_name).where(hash))
+      array_to_hash(items(collection_name).where(hash).select)
     end
 
     # Gets all records for a collection
@@ -143,7 +143,7 @@ module MinceDynamoDb # :nodoc:
     # @param [String] collection_name the name of the collection
     # @return [Array] all records for the given collection name
     def find_all(collection_name)
-      array_to_hash(items(collection_name))
+      array_to_hash(items(collection_name).select)
     end
 
     # Gets a record matching a key and value
@@ -176,7 +176,7 @@ module MinceDynamoDb # :nodoc:
     # @param [String] array_key the field to push an array from
     # @param [*] value_to_remove the value to remove from the array
     def remove_from_array(collection_name, identifying_key, identifying_value, array_key, value_to_remove)
-      item = items(collection_name).where(identifying_key.to_s => identifying_value).first      
+      item = items(collection_name).where(identifying_key.to_s => identifying_value).select.first      
       item.attributes.delete(array_key => [value_to_remove])
     end
 
@@ -187,7 +187,7 @@ module MinceDynamoDb # :nodoc:
     # @param [Array] values an array of values that the record could contain
     # @return [Array] all records that contain any of the values given
     def containing_any(collection_name, key, values)
-      array_to_hash items(collection_name).where(key.to_sym).in(values)
+      array_to_hash items(collection_name).where(key.to_sym).in(values).select
     end
 
     # Returns all records where the given key contains the given value
@@ -197,12 +197,12 @@ module MinceDynamoDb # :nodoc:
     # @param [*] value the value to find a record by
     # @return [Array] all records where the key contains the given value
     def array_contains(collection_name, key, value)
-      array_to_hash items(collection_name).where(key.to_sym).contains(value)
+      array_to_hash items(collection_name).where(key.to_sym).contains(value).select
     end
 
     # Deletes a record that matches the given criteria from the data store.
     def delete_by_params(collection_name, params)
-      item = items(collection_name).where(params).first
+      item = items(collection_name).where(params).select.first
       item.delete
     end
 
