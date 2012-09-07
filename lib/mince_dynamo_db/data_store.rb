@@ -244,7 +244,7 @@ module MinceDynamoDb # :nodoc:
 
     # Takes a DynamoDB item and returns the attributes of that item as a hash
     def to_hash(item)
-      item.attributes.to_h if item
+      item.attributes if item
     end
 
     # Takes an array of DynamoDB items and returns the attributes of each item as a hash.
