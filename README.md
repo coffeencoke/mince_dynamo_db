@@ -7,7 +7,7 @@ Provides a very light weight interface for storing and retreiving information to
 The motivation behind this is so your application is not tightly tied to a specific database.  As your application grows you may need to upgrade to a different database or pull specific models to a different persistence strategy.
 
 [@github](https://github.com/coffeencoke/mince_dynamo_db)
-[@rubygems (not yet published)](#)
+[@rubygems](https://rubygems.org/gems/mince_dynamo_db)
 
 # How to use
 
