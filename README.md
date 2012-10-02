@@ -15,13 +15,13 @@ view the [example mince rails app](https://github.com/coffeencoke/mince_rails_ex
 
 <pre>
 # Add a book to the books collection
-MinceDynamoDb::DataStore.add 'books', title: 'The World In Photographs', publisher: 'National Geographic'
+MinceDynamoDb::DataStore.instance.add 'books', title: 'The World In Photographs', publisher: 'National Geographic'
 
 # Retrieve all records from the books collection
-MinceDynamoDb::DataStore.find_all 'books'
+MinceDynamoDb::DataStore.instance.find_all 'books'
 
 # Replace a specific book
-MinceDynamoDb::DataStore.replace 'books', id: 1, title: 'A World In Photographs', publisher: 'National Geographic'
+MinceDynamoDb::DataStore.instance.replace 'books', id: 1, title: 'A World In Photographs', publisher: 'National Geographic'
 </pre>
 
 View the docs for MinceDynamoDb::DataStore for all methods available.
