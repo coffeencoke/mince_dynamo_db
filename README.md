@@ -7,7 +7,7 @@ Provides a very light weight interface for storing and retreiving information to
 The motivation behind this is so your application is not tightly tied to a specific database.  As your application grows you may need to upgrade to a different database or pull specific models to a different persistence strategy.
 
 [@github](https://github.com/coffeencoke/mince_dynamo_db)
-[@rubygems (not yet published)](#)
+[@rubygems](https://rubygems.org/gems/mince_dynamo_db)
 
 # How to use
 
@@ -15,13 +15,13 @@ view the [example mince rails app](https://github.com/coffeencoke/mince_rails_ex
 
 <pre>
 # Add a book to the books collection
-MinceDynamoDb::DataStore.add 'books', title: 'The World In Photographs', publisher: 'National Geographic'
+MinceDynamoDb::DataStore.instance.add 'books', title: 'The World In Photographs', publisher: 'National Geographic'
 
 # Retrieve all records from the books collection
-MinceDynamoDb::DataStore.find_all 'books'
+MinceDynamoDb::DataStore.instance.find_all 'books'
 
 # Replace a specific book
-MinceDynamoDb::DataStore.replace 'books', id: 1, title: 'A World In Photographs', publisher: 'National Geographic'
+MinceDynamoDb::DataStore.instance.replace 'books', id: 1, title: 'A World In Photographs', publisher: 'National Geographic'
 </pre>
 
 View the docs for MinceDynamoDb::DataStore for all methods available.
