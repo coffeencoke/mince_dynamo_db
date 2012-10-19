@@ -173,6 +173,16 @@ module Mince
         end
       end
 
+      def self.set_data(data)
+        clear
+
+        data.each do |key, records|
+          records.each do |record|
+            add key, record
+          end
+        end
+      end
+
       # Returns the collection, or table, for a given collection name
       # 
       # The schema must be loaded before any queries are made against a collection

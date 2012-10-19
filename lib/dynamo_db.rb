@@ -1,7 +1,10 @@
 module Mince
   module DynamoDb
-    require 'mince_dynamo_db/connection'
-    require 'mince_dynamo_db/data_store'
-    require "mince_dynamo_db/version"
+    require_relative 'dynamo_db/config'
+    require_relative 'dynamo_db/connection'
+    require_relative 'dynamo_db/data_sanitizer'
+    require_relative 'dynamo_db/data_store'
+    require_relative 'dynamo_db/interface'
+    require_relative 'dynamo_db/version'
   end
 end
