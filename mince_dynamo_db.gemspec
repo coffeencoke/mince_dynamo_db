@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "mince_dynamo_db/version"
+require "dynamo_db/version"
 
 Gem::Specification.new do |s|
   s.name        = "mince_dynamo_db"
-  s.version     = MinceDynamoDb::VERSION
+  s.version     = Mince::DynamoDb.version
   s.authors     = ["Matt Simpson"]
   s.email       = ["matt@railsgrammer.com"]
   s.homepage    = "https://github.com/coffeencoke/mince_dynamo_db"
