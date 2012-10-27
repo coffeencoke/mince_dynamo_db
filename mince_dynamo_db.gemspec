@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "mince_dynamo_db/version"
+require "dynamo_db/version"
 
 Gem::Specification.new do |s|
   s.name        = "mince_dynamo_db"
-  s.version     = MinceDynamoDb::VERSION
+  s.version     = Mince::DynamoDb.version
   s.authors     = ["Matt Simpson"]
   s.email       = ["matt@railsgrammer.com"]
   s.homepage    = "https://github.com/coffeencoke/mince_dynamo_db"
@@ -21,8 +21,10 @@ Gem::Specification.new do |s|
   s.add_dependency 'aws-sdk', "~> 1.3.7"
   s.add_dependency 'activesupport', "~> 3.0"
 
+  s.add_development_dependency('rake', '~> 0.9')
   s.add_development_dependency "rspec", "~> 2.8.0"
   s.add_development_dependency "guard-rspec", "~> 0.6.0"
   s.add_development_dependency "yard", "~> 0.7.5"
   s.add_development_dependency "redcarpet", "~> 2.1.1"
+  s.add_development_dependency "fake_dynamo"
 end
