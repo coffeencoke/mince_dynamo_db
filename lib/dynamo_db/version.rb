@@ -10,7 +10,7 @@ module Mince
       end
 
       def self.patch
-        "0.pre"
+        "0.pre.1"
       end
     end
 
