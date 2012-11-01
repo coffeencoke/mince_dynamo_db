@@ -30,6 +30,14 @@ module Mince # :nodoc:
         instance.access_key_id
       end
 
+      def self.secret_access_key=(val)
+        instance.secret_access_key = val
+      end
+
+      def self.access_key_id=(val)
+        instance.access_key_id = val
+      end
+
       attr_reader :primary_key
 
       def initialize
