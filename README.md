@@ -1,59 +1,48 @@
-# What is mince dynamo db?
+# MinceDynamoDb
 
-Light weight ORM to persist data to an Amazon DynamoDB database.
+MinceDynamoDb is a ruby ORM to provide a quick way to develop with an Amazon DynamoDb database in Ruby applications.
 
-Provides a very light weight interface for storing and retreiving information to DynamoDB.
+It is a database interface that abides to the [Mince](https://github.com/coffeencoke/mince/) interface API requirements and is officially supported by [Mince](https://github.com/coffeencoke/mince/).
 
-The motivation behind this is so your application is not tightly tied to a specific database.  As your application grows you may need to upgrade to a different database or pull specific models to a different persistence strategy.
+# How to use it
 
-[@github](https://github.com/coffeencoke/mince_dynamo_db)
-[@rubygems](https://rubygems.org/gems/mince_dynamo_db)
+View the [Mince Wiki](https://github.com/coffeencoke/mince/wiki) on details on how to use this gem.
 
-# How to use
+Basically -
 
-view the [example mince rails app](https://github.com/coffeencoke/mince_rails_example) to see how to use this.
+```
+gem install mince_dynamo_db
+```
 
-<pre>
-# Add a book to the books collection
-MinceDynamoDb::DataStore.instance.add 'books', title: 'The World In Photographs', publisher: 'National Geographic'
+```ruby
+require 'mince_dynamo_db'
 
-# Retrieve all records from the books collection
-MinceDynamoDb::DataStore.instance.find_all 'books'
+interface = Mince::DynamoDb::Interface
+interface.add 'tron_light_cycles', luminating_color: 'red', grid_locked: true, rezzed: false
+interface.add 'tron_light_cycles', luminating_color: 'blue', grid_locked: true, rezzed: true
+interface.find_all('tron_light_cycles') 
+	# => [{:luminating_color=>"red", :grid_locked=>true, :rezzed=>false}, {:luminating_color=>"blue", :grid_locked=>true, :rezzed=>true}] 
+interface.get_for_key_with_value('tron_light_cycles', :luminating_color, 'blue')
+	# => {:luminating_color=>"blue", :grid_locked=>true, :rezzed=>true} 
+```
 
-# Replace a specific book
-MinceDynamoDb::DataStore.instance.replace 'books', id: 1, title: 'A World In Photographs', publisher: 'National Geographic'
-</pre>
+Configuring MinceDynamoDb to use your Amazon DynamoDb instance:
 
-View the docs for MinceDynamoDb::DataStore for all methods available.
+```ruby
+# Change the values to your credential info
+Mince::DynamoDb::Config.secret_access_key = 'asdf1234iuoyasdfkljhqweriouy12341234asdf'
+Mince::DynamoDb::Config.access_key_id = '123asd123asd123asd12'
+```
 
-Use with [mince data model](https://github.com/asynchrony/mince_data_model) to make it easy to change from one data storage to another, like [Hashy Db](https://github.com/asynchrony/hashy_db), a Hash data persistence implementation, or [Mince](https://github.com/asynchrony/mince), a MongoDB implementation.
+# Links
 
-# Why would you want this?
-
-- To defer choosing your database until you know most about your application.
-- Provides assitance in designing a database agnostic architecture.
-- When used along with [Hashy Db](https://github.com/asynchrony/hashy_db) it offers very little technical dependencies.  Use Hashy Db in development mode so that you can clone the repo and develop, and run tests, cucumbers without databases, migrations, etc.  Then in production mode, switch to Mince Dynamo DB.
-
-If you are able to switch between Hashy Db and Mince Dynamo Db, your application will be more open to new and improved database in the future, or as your application evolves you aren't tied to a database.
-
-
-# Todo
-
-- Write integration specs
-- Do not use singleton for data store
-- Refactor data store
-- Remove dependency on Active Support
+* [API Docs](http://rdoc.info/github/coffeencoke/mince_dynamo_db/master/frames)
+* [Travis CI](https://travis-ci.org/#!/coffeencoke/mince_dynamo_db)
+* [Rubygems](https://rubygems.org/gems/mince_dynamo_db)
+* [Github](https://github.com/coffeencoke/mince_dynamo_db)
+* [Wiki](https://github.com/coffeencoke/mince_dynamo_db/wiki)
+* [Mince](https://github.com/coffeencoke/mince)
 
 # Contribute
 
-- fork into a topic branch, write specs, make a pull request.
-
-# Owners
-
-Matt Simpson - [@railsgrammer](https://twitter.com/railsgrammer)
-
-# Contributors
-
-- Your name here!
-
-![Mince Some App](https://github.com/coffeencoke/gist-files/raw/master/images/mince%20garlic.png)
+This gem is officially supported by [Mince](https://github.com/coffeencoke/mince/), please go there to learn how to contribute.
