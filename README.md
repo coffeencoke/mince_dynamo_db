@@ -17,7 +17,7 @@ gem install mince_dynamo_db
 ```ruby
 require 'mince_dynamo_db'
 
-interface = Mince::DynamoDb::Interface
+interface = MinceDynamoDb::Interface
 interface.add 'tron_light_cycles', luminating_color: 'red', grid_locked: true, rezzed: false
 interface.add 'tron_light_cycles', luminating_color: 'blue', grid_locked: true, rezzed: true
 interface.find_all('tron_light_cycles') 
@@ -30,8 +30,8 @@ Configuring MinceDynamoDb to use your Amazon DynamoDb instance:
 
 ```ruby
 # Change the values to your credential info
-Mince::DynamoDb::Config.secret_access_key = 'asdf1234iuoyasdfkljhqweriouy12341234asdf'
-Mince::DynamoDb::Config.access_key_id = '123asd123asd123asd12'
+MinceDynamoDb::Config.secret_access_key = 'asdf1234iuoyasdfkljhqweriouy12341234asdf'
+MinceDynamoDb::Config.access_key_id = '123asd123asd123asd12'
 ```
 
 # Links

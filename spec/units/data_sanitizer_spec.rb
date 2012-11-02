@@ -1,8 +1,8 @@
-require_relative '../../lib/dynamo_db/data_sanitizer'
+require_relative '../../lib/mince_dynamo_db/data_sanitizer'
 
 require 'date'
 
-describe Mince::DynamoDb::DataSanitizer do
+describe MinceDynamoDb::DataSanitizer do
   it 'converts a Time object to a string' do
     value = Time.now
 

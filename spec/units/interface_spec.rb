@@ -1,6 +1,6 @@
-require_relative '../../lib/dynamo_db/interface'
+require_relative '../../lib/mince_dynamo_db/interface'
 
-describe Mince::DynamoDb::Interface do
+describe MinceDynamoDb::Interface do
   let(:db) { mock 'dynamo db connection', tables: { collection_name => collection } }
   let(:mince_dynamo_db_connection) { mock 'mince dynamo db connection', connection: db }
   let(:collection) { mock 'some collection', items: items, schema_loaded?: true }
@@ -17,10 +17,10 @@ describe Mince::DynamoDb::Interface do
   let(:items) { mock 'items' }
 
   before do
-    Mince::DynamoDb::DataStore.stub(:items).with(collection_name).and_return(items)
-    Mince::DynamoDb::DataStore.stub(:collection).with(collection_name).and_return(collection)
-    Mince::DynamoDb::DataStore.stub(collections: collections, db: db)
-    Mince::DynamoDb::DataSanitizer.stub(:prepare_hash_for_storage).with(data).and_return(sanitized_data)
+    MinceDynamoDb::DataStore.stub(:items).with(collection_name).and_return(items)
+    MinceDynamoDb::DataStore.stub(:collection).with(collection_name).and_return(collection)
+    MinceDynamoDb::DataStore.stub(collections: collections, db: db)
+    MinceDynamoDb::DataSanitizer.stub(:prepare_hash_for_storage).with(data).and_return(sanitized_data)
   end
 
   describe "Generating a primary key" do
@@ -123,7 +123,7 @@ describe Mince::DynamoDb::Interface do
   it 'can push a value to an array for a specific record' do
     value_to_push = mock 'value to push to the record'
     sanitized_value_to_push = mock 'sanitized value to push to the record'
-    Mince::DynamoDb::DataSanitizer.stub(:prepare_field_for_storage).with(value_to_push).and_return(sanitized_value_to_push)
+    MinceDynamoDb::DataSanitizer.stub(:prepare_field_for_storage).with(value_to_push).and_return(sanitized_value_to_push)
     items.should_receive(:where).with("key" => "value").and_return([return_data])
     attributes.should_receive(:add).with(:array_key => [sanitized_value_to_push])
 

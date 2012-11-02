@@ -1,6 +1,6 @@
-require_relative '../../lib/dynamo_db/connection'
+require_relative '../../lib/mince_dynamo_db/connection'
 
-describe Mince::DynamoDb::Connection do
+describe MinceDynamoDb::Connection do
   subject { described_class.instance }
 
   let(:connection) { mock 'an amazon dynamo db object' }
@@ -9,7 +9,7 @@ describe Mince::DynamoDb::Connection do
   let(:aws_config) { mock 'aws config object', secret_access_key: secret_access_key, access_key_id: access_key_id }
 
   before do
-    Mince::DynamoDb::Config.stub(access_key_id: access_key_id, secret_access_key: secret_access_key)
+    MinceDynamoDb::Config.stub(access_key_id: access_key_id, secret_access_key: secret_access_key)
   end
 
   it 'has a dynamo db connection' do

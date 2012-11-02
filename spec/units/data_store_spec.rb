@@ -1,6 +1,6 @@
-require_relative '../../lib/dynamo_db/data_store'
+require_relative '../../lib/mince_dynamo_db/data_store'
 
-describe Mince::DynamoDb::DataStore do
+describe MinceDynamoDb::DataStore do
   let(:db) { mock 'db connection', tables: collections }
   let(:collections) { { collection_name => collection }  }
   let(:collection) { mock 'some collection', items: items, schema_loaded?: true }

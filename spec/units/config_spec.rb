@@ -1,6 +1,6 @@
-require_relative '../../lib/dynamo_db/config'
+require_relative '../../lib/mince_dynamo_db/config'
 
-describe Mince::DynamoDb::Config do
+describe MinceDynamoDb::Config do
   let(:secret_access_key) { mock }
   let(:access_key_id) { mock }
 
