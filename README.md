@@ -41,6 +41,7 @@ MinceDynamoDb::Config.access_key_id = '123asd123asd123asd12'
 * [Rubygems](https://rubygems.org/gems/mince_dynamo_db)
 * [Github](https://github.com/coffeencoke/mince_dynamo_db)
 * [Wiki](https://github.com/coffeencoke/mince_dynamo_db/wiki)
+* [Issues](https://github.com/coffeencoke/mince_dynamo_db/issues)
 * [Mince](https://github.com/coffeencoke/mince)
 
 # Contribute
