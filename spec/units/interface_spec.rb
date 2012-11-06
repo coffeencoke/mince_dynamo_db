@@ -23,6 +23,40 @@ describe MinceDynamoDb::Interface do
     MinceDynamoDb::DataSanitizer.stub(:prepare_hash_for_storage).with(data).and_return(sanitized_data)
   end
 
+  it 'can create a collection' do
+    collections.should_receive(:create).with(collection_name, 10, 5)
+    described_class.create_collection(collection_name)
+
+    collections.should_receive(:create).with(collection_name, 100, 50)
+    described_class.create_collection(collection_name, 100, 50)
+  end
+
+  it 'can update a field with a value' do
+    primary_key_value = mock("id of record")
+    field_name = mock 'field name'
+    new_value = mock 'new value'
+    items.stub(:where).with(described_class.primary_key_identifier.to_s => primary_key_value).and_return([return_data])
+
+    attributes.should_receive(:set).with(field_name => new_value)
+
+    described_class.update_field_with_value(collection_name, primary_key_value, field_name, new_value)
+  end
+
+  it 'can delete a field from a collection' do
+    pending
+    primary_key_value = mock("id of record")
+    field_name = mock 'field name'
+    new_value = mock 'new value'
+    items.stub(:where).with(described_class.primary_key_identifier.to_s => primary_key_value).and_return([return_data])
+
+    attributes.should_receive(:set).with(field_name => new_value)
+
+    described_class.delete_field(collection_name, field_name)
+  end
+
+  it 'can delete a collection'
+  it 'can increment a field by a specific amount'
+
   describe "Generating a primary key" do
     let(:unique_id) { '123456789012345' }
     let(:time) { mock 'time' }

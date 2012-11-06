@@ -7,8 +7,9 @@ module MinceDynamoDb # :nodoc:
 
   module Interface
     # Not yet implemented
-    def self.update_field_with_value(*args)
-      raise %(The method `MinceDynamoDb::DataStore.singleton.update_field_with_value` is not implemented, you should implement it for us!)
+    def self.update_field_with_value(collection_name, primary_key_value, field_name, new_value)
+      item = find(collection_name, primary_key_identifier, primary_key_value)
+      item.set(field_name => new_value)
     end
 
     def self.delete_field(collection_name, field)
@@ -23,7 +24,13 @@ module MinceDynamoDb # :nodoc:
       raise %(The method `MinceDynamoDb::DataStore.singleton.increment_field_by_amount` is not implemented, you should implement it for us!)
     end
 
+    def self.create_collection(collection_name, read_rate=10, write_rate=5)
+      collections.create(collection_name, read_rate, write_rate)
+    end
 
+    def self.collection_status(collection_name)
+      collection(collection_name).status
+    end
 
     # Returns the primary key identifier for records.  This is necessary because not all databases use the same
     # primary key.

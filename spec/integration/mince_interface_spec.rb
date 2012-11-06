@@ -13,6 +13,14 @@ describe 'Mince Interface with DynamoDb' do
     Mince::Config.interface = MinceDynamoDb::Interface
   end
 
+  before(:all) do
+    # Create collection to use for test
+  end
+
+  after(:all) do
+    # Remove collection to use for test
+  end
+
   it_behaves_like 'a mince interface'
 end
 end
