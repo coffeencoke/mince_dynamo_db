@@ -8,7 +8,7 @@ module MinceDynamoDb # :nodoc:
   module Interface
     # Not yet implemented
     def self.update_field_with_value(collection_name, primary_key_value, field_name, new_value)
-      item = find(collection_name, primary_key_identifier, primary_key_value)
+      item = find(collection_name, primary_key, primary_key_value)
       item.set(field_name => new_value)
     end
 
@@ -36,7 +36,7 @@ module MinceDynamoDb # :nodoc:
     # primary key.
     #
     # @return [String] the name of the primary key field.
-    def self.primary_key_identifier
+    def self.primary_key
       Config.primary_key
     end
 

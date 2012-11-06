@@ -35,7 +35,7 @@ describe MinceDynamoDb::Interface do
     primary_key_value = mock("id of record")
     field_name = mock 'field name'
     new_value = mock 'new value'
-    items.stub(:where).with(described_class.primary_key_identifier.to_s => primary_key_value).and_return([return_data])
+    items.stub(:where).with(described_class.primary_key.to_s => primary_key_value).and_return([return_data])
 
     attributes.should_receive(:set).with(field_name => new_value)
 
@@ -47,7 +47,7 @@ describe MinceDynamoDb::Interface do
     primary_key_value = mock("id of record")
     field_name = mock 'field name'
     new_value = mock 'new value'
-    items.stub(:where).with(described_class.primary_key_identifier.to_s => primary_key_value).and_return([return_data])
+    items.stub(:where).with(described_class.primary_key.to_s => primary_key_value).and_return([return_data])
 
     attributes.should_receive(:set).with(field_name => new_value)
 
