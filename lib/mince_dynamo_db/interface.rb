@@ -115,7 +115,7 @@ module MinceDynamoDb # :nodoc:
     # @param [*] value a value the find a record by
     # @return [Hash] a record that matches the given key and value
     def self.find(collection_name, key, value)
-      get_for_key_with_value(collection_name, key, value)
+      items(collection_name).at(value).attributes
     end
 
     # Pushes a value to a record's key that is an array
