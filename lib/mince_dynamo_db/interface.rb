@@ -7,11 +7,6 @@ module MinceDynamoDb # :nodoc:
 
   module Interface
     # Not yet implemented
-    def self.update_field_with_value(collection_name, primary_key_value, field_name, new_value)
-      item = find(collection_name, primary_key, primary_key_value)
-      item.set(field_name => new_value)
-    end
-
     def self.delete_field(collection_name, field)
       raise %(The method `MinceDynamoDb::DataStore.singleton.delete_field` is not implemented, you should implement it for us!)
     end
@@ -70,6 +65,17 @@ module MinceDynamoDb # :nodoc:
       items(collection_name).put(sanitized_hash(hash))
     end
 
+    # Updates a field for a record that has the given value as its primary key
+    #
+    # @param [String] collection_name the name of the collection
+    # @param [String] primary_key_value the value of the primary key
+    # @param [String] field_name the name of the field to update
+    # @param [String] new_value the value to update the field with
+    def self.update_field_with_value(collection_name, primary_key_value, field_name, new_value)
+      item = find_item(collection_name, primary_key_value)
+      item.set(field_name => new_value)
+    end
+
     # Gets all records that have the value for a given key.
     #
     # @param [String] collection_name the name of the collection
@@ -108,13 +114,23 @@ module MinceDynamoDb # :nodoc:
       array_to_hash(items(collection_name).select)
     end
 
-    # Gets a record matching a key and value
+    # Gets a hash of attributes for a record for the given value for the collection's primary key
     #
     # @param [String] collection_name the name of the collection
-    # @param [String] key the key to find a record by
+    # @param [String] key the key to find a record by (not used)
     # @param [*] value a value the find a record by
-    # @return [Hash] a record that matches the given key and value
+    # @return [Hash] a record that matches the given key and value using the collection's primary key
     def self.find(collection_name, key, value)
+      find_item(collection_name, value).to_h
+    end
+
+
+    # Gets a record for the given value for the collection's primary key
+    #
+    # @param [String] collection_name the name of the collection
+    # @param [*] value a value the find a record by
+    # @return [AWS::DynamoDB::AttributeCollection] a record that matches the given key and value using the collection's primary key
+    def self.find_item(collection_name, value)
       items(collection_name).at(value).attributes
     end
 

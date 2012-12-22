@@ -13,7 +13,7 @@ describe MinceDynamoDb::Interface do
   let(:sanitized_time) { mock 'sanitized time' }
   let(:sanitized_id) { mock 'sanitized id' }
   let(:return_data) { mock 'return data', attributes: attributes }
-  let(:attributes) { mock 'attributes' }
+  let(:attributes) { mock 'attributes', to_h: mock('a hash of the attributes') }
   let(:items) { mock 'items' }
 
   before do
@@ -101,7 +101,7 @@ describe MinceDynamoDb::Interface do
 
     items.should_receive(:at).with(value).and_return(return_data)
     
-    described_class.find(collection_name, field, value).should == attributes
+    described_class.find(collection_name, field, value).should == attributes.to_h
   end
 
   it 'can delete a record that matches a criteria' do
