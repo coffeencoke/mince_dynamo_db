@@ -102,8 +102,12 @@ module MinceDynamoDb # :nodoc:
     # @param [Hash] hash a hash to get a record for
     # @return [Array] an array of all records matching the given hash for the collection
     def self.get_by_params(collection_name, hash)
+      array_to_hash(get_items_by_params(collection_name, hash).select)
+    end
+
+    def self.get_items_by_params(collection_name, hash)
       hash = HashWithIndifferentAccess.new(hash)
-      array_to_hash(items(collection_name).where(hash).select)
+      items(collection_name).where(hash)
     end
 
     # Gets all records for a collection
@@ -178,10 +182,9 @@ module MinceDynamoDb # :nodoc:
       array_to_hash items(collection_name).where(key.to_sym).contains(value).select
     end
 
-    # Deletes a record that matches the given criteria from the data store.
+    # Deletes all records that matche the given criteria from the data store.
     def self.delete_by_params(collection_name, params)
-      item = items(collection_name).where(params).select.first
-      item.delete
+      get_items_by_params(collection_name, params).each(&:delete)
     end
 
     # Clears the data store.

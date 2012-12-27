@@ -105,7 +105,7 @@ describe MinceDynamoDb::Interface do
   end
 
   it 'can delete a record that matches a criteria' do
-    params = mock 'params'
+    params = { "some_hash" => 'some value' }
     items.should_receive(:where).with(params).and_return([return_data])
     return_data.should_receive(:delete)
     
